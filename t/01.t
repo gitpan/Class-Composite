@@ -4,7 +4,7 @@ use Data::Dumper;
 
 use lib	qw( ./lib ../lib );
 
-use Test::Simple  tests => 22;
+use Test::Simple  tests => 24;
 
 use Class::Composite::Container;
 use Class::Composite::Element;
@@ -20,7 +20,8 @@ ok( $container->nOfElements == 2, "2 elements found");
 ok( $container->removeElement(1) eq $element2, "removed 2d element");
 ok( $container->nOfElements == 1, "Found 1 element");
 ok( ! $container->addElement( 123 ), "Could not add a non Class::Composite");
-
+ok( $container->addElement( undef ), "Could add undef");
+ok( $container->nOfElements == 2, "found 2 elements");
 
 ok( $container->elements([$element1, $element2, $element1]), "replaced elements");
 ok( $container->getElements->[1] eq $element2, "2nd element looks good");

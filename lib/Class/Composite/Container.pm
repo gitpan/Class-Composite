@@ -119,7 +119,7 @@ sub _addThis {
   my ($self, %args) = @_;
   my $object = $args{this};
   my $flat   = $args{flat} || 0;
-  $self->checkElement( $object ) or return;
+  $self->checkElement( $object ) or return $self->_warn("Element to add is not of type ".$self->elementType);
   if ($flat and ref($object)) {
     my $objects = $object->isa('Class::Composite::Container') ? $object->getLeaves
                                                               : [ $object ];
@@ -140,13 +140,14 @@ sub _addTheseObj {
 =head2 checkElement( $elem )
 
 Returns true if $elem can be added to the container.
-The element must be of the same type than elementType() (see I<Class::Composite>)
+The element must be of the same type than elementType() (see I<Class::Composite>) or is undef.
 This method is called for each element added to the collection.
 
 =cut
 sub checkElement {
   my ($self, $elem) = @_;
   my $type = $self->elementType or return 1;
+  return 1 unless defined $elem;
   if (blessed($elem)) {
     return $elem->isa($type);
   }

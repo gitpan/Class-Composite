@@ -70,7 +70,7 @@ use Scalar::Util  qw( blessed );
 
 use base  qw( Class::Base );
 
-our $VERSION = 0.1;
+our $VERSION = 0.2;
 
 
 =head2 getAll()
@@ -82,7 +82,8 @@ sub getAll : method {
   my $self = shift;
   my @elems = ();
   foreach my $junior ( @{$self->getElements()} ) {
-    push @elems, $junior, @{$junior->getAll};
+    push @elems, $junior;
+    push @elems, @{$junior->getAll} if defined($junior);
   }
   \@elems;
 }
@@ -97,6 +98,7 @@ sub getLeaves : method {
   my ($self, $start, $last) = @_;
   my @elements = ();
   foreach my $elem ( @{$self->getElements($start, $last)} ) {
+    defined $elem or next;
     if ($elem->isa('Class::Composite::Element')) {
       push @elements, $elem;
     }
@@ -164,7 +166,7 @@ sub applyToAll : method {
 ## Helper method
 ##
 sub _warn {
-  warn $_[1].' - '.caller(1)."\n";
+  warn $_[1].' - '.caller(1)." " . caller(2) . "\n";
   undef;
 }
 
